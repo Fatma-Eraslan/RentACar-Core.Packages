@@ -5,10 +5,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Core.Persistence.Paging;
+using Core.Persistence.Dynamic;
 
 namespace Core.Persistence.Repositories
 {
-    public interface IAsyncRepository<TEntity, TEntityId>
+    public interface IAsyncRepository<TEntity, TEntityId>:IQuery<TEntity>
         where TEntity : Entity<TEntityId>
     {
         Task<TEntity?> GetAsync(
@@ -19,7 +21,7 @@ namespace Core.Persistence.Repositories
             CancellationToken cancellationToken = default//iptal etme işlemi            
          );
 
-        Task<IPaginate<TEntity?>> GetListAsync(
+        Task<Paginate<TEntity?>> GetListAsync(
                Expression<Func<TEntity, bool>> predicate = null,
                Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
                Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>>? include = null,
@@ -30,7 +32,7 @@ namespace Core.Persistence.Repositories
                CancellationToken cancellationToken = default
             );
         
-        Task<IPaginate<TEntity?>> GetListBydynamicAsync(
+        Task<Paginate<TEntity?>> GetListBydynamicAsync(
             DynamicQuery dynamic,
                Expression<Func<TEntity, bool>> predicate = null,
                Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,

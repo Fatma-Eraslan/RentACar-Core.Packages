@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace Core.Persistence.Repositories
 {
-    internal interface IQuery
+    public interface IQuery<T>
     {
+        IQueryable<T> Query();
     }
 }

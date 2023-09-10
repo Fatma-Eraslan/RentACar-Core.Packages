@@ -10,7 +10,7 @@ namespace Core.Persistence.Paging
     {
         public Paginate()
         {
-            
+            Items=Array.Empty<T>();
         }
 
         public int Size { get; set; }//data sayısı
