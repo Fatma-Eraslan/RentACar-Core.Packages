@@ -5,7 +5,9 @@ VisualStudioVersion = 17.5.33530.505
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.Persistence", "Core.Persistence\Core.Persistence.csproj", "{4BF86E24-E1D6-4481-A69B-11264BF551C9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Application", "Core.Application\Core.Application.csproj", "{1CFA500C-757D-4D2F-8E30-EDB5F81BCA0F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.Application", "Core.Application\Core.Application.csproj", "{1CFA500C-757D-4D2F-8E30-EDB5F81BCA0F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.CrossCuttingConcerns", "Core.CrossCuttingConcerns\Core.CrossCuttingConcerns.csproj", "{3D9FA99C-60B9-44B3-99C1-2751BD4D30E0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{1CFA500C-757D-4D2F-8E30-EDB5F81BCA0F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1CFA500C-757D-4D2F-8E30-EDB5F81BCA0F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1CFA500C-757D-4D2F-8E30-EDB5F81BCA0F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3D9FA99C-60B9-44B3-99C1-2751BD4D30E0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3D9FA99C-60B9-44B3-99C1-2751BD4D30E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3D9FA99C-60B9-44B3-99C1-2751BD4D30E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3D9FA99C-60B9-44B3-99C1-2751BD4D30E0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
