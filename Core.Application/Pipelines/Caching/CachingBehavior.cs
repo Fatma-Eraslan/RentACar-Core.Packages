@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,22 +18,22 @@ public class CachingBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, 
     private readonly CacheSettings _cacheSettings;
     private readonly IDistributedCache _cache;
 
-    public CachingBehavior(CacheSettings cacheSettings, IDistributedCache cache)
+    public CachingBehavior(IDistributedCache cache, IConfiguration configuration)
     {
-        _cacheSettings = cacheSettings;
+        _cacheSettings = configuration.GetSection("CacheSettings").Get<CacheSettings>() ?? throw new InvalidOperationException();
         _cache = cache;
     }
 
     public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
     {
-      if(request.BypassCache)
+        if (request.BypassCache)
         {
             return await next();
         }
 
         TResponse response;
         byte[]? cacheResponse = await _cache.GetAsync(request.CacheKey, cancellationToken);
-        if(cacheResponse!=null)
+        if (cacheResponse != null)
         {
             response = JsonSerializer.Deserialize<TResponse>(Encoding.Default.GetString(cacheResponse));
         }
@@ -43,8 +44,8 @@ public class CachingBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, 
         return response;
     }
 
-    private async Task<TResponse?> getResponseAndAddToCache(TRequest request, 
-        RequestHandlerDelegate<TResponse> next, 
+    private async Task<TResponse?> getResponseAndAddToCache(TRequest request,
+        RequestHandlerDelegate<TResponse> next,
         CancellationToken cancellationToken)
     {
         TResponse response = await next();
