@@ -70,19 +70,19 @@ public class CachingBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, 
     private async Task addCacheKeyToGroup(TRequest request, TimeSpan slidingExpiration, CancellationToken cancellationToken)
     {
         byte[]? cacheGroupCache = await _cache.GetAsync(key: request.CacheGroupKey!, cancellationToken);
-        HashSet<string> cacheKeysInGroup;
+        HashSet<string> cacheKeysInGroup;//Cache grubunda saklanan cache anahtarlarını tutacak bir HashSet<string> tanımladık.
         if (cacheGroupCache != null)
         {
             cacheKeysInGroup = JsonSerializer.Deserialize<HashSet<string>>(Encoding.Default.GetString(cacheGroupCache))!;
             if (!cacheKeysInGroup.Contains(request.CacheKey))
-                cacheKeysInGroup.Add(request.CacheKey);
+                cacheKeysInGroup.Add(request.CacheKey);//Eğer cacheKeysInGroup içinde request.CacheKey yoksa, bu anahtar gruba eklenir.
         }
         else
             cacheKeysInGroup = new HashSet<string>(new[] { request.CacheKey });
         byte[] newCacheGroupCache = JsonSerializer.SerializeToUtf8Bytes(cacheKeysInGroup);
 
         byte[]? cacheGroupCacheSlidingExpirationCache = await _cache.GetAsync(
-            key: $"{request.CacheGroupKey}SlidingExpiration",
+            key: $"{request.CacheGroupKey}SlidingExpiration", //Cache grubunun SlidingExpiration için cache'de daha önce saklanan değer olup olmadığını kontrol eder.
             cancellationToken
         );
         int? cacheGroupCacheSlidingExpirationValue = null;
@@ -90,15 +90,16 @@ public class CachingBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, 
             cacheGroupCacheSlidingExpirationValue = Convert.ToInt32(Encoding.Default.GetString(cacheGroupCacheSlidingExpirationCache));
         if (cacheGroupCacheSlidingExpirationValue == null || slidingExpiration.TotalSeconds > cacheGroupCacheSlidingExpirationValue)
             cacheGroupCacheSlidingExpirationValue = Convert.ToInt32(slidingExpiration.TotalSeconds);
-        byte[] serializeCachedGroupSlidingExpirationData = JsonSerializer.SerializeToUtf8Bytes(cacheGroupCacheSlidingExpirationValue);
+        byte[] serializeCachedGroupSlidingExpirationData = JsonSerializer.SerializeToUtf8Bytes(cacheGroupCacheSlidingExpirationValue);//byte dizisine dönüştürülür.
 
         DistributedCacheEntryOptions cacheOptions =
-            new() { SlidingExpiration = TimeSpan.FromSeconds(Convert.ToDouble(cacheGroupCacheSlidingExpirationValue)) };
+            new() { SlidingExpiration = TimeSpan.FromSeconds(Convert.ToDouble(cacheGroupCacheSlidingExpirationValue)) };//Cache için  SlidingExpiration ayarını içeren DistributedCacheEntryOptions nesnesi oluşturulur.
 
-        await _cache.SetAsync(key: request.CacheGroupKey!, newCacheGroupCache, cacheOptions, cancellationToken);
+        await _cache.SetAsync(key: request.CacheGroupKey!, newCacheGroupCache, cacheOptions, cancellationToken);//Güncellenmiş cache anahtar grubu _cache'e eklenir.
+
         _logger.LogInformation($"Added to Cache -> {request.CacheGroupKey}");
 
-        await _cache.SetAsync(
+        await _cache.SetAsync( //Güncellenen SlidingExpiration süresi _cache'e eklenir.
             key: $"{request.CacheGroupKey}SlidingExpiration",
             serializeCachedGroupSlidingExpirationData,
             cacheOptions,
