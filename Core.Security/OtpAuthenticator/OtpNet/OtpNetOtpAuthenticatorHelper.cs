@@ -11,7 +11,7 @@ public class OtpNetOtpAuthenticatorHelper : IOtpAuthenticatorHelper
 {
     public Task<byte[]> GenerateSecretKey()
     {
-        byte[] key = KeyGeneration.GenerateRandomKey(20);
+        byte[] key = KeyGeneration.GenerateRandomKey(20);//20 bayt uzunluğunda rastgele bir anahtar oluşturulur
 
         string base32String = Base32Encoding.ToString(key);
         byte[] base32Bytes = Base32Encoding.ToBytes(base32String);

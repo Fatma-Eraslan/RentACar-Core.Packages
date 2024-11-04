@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Core.Security.OtpAuthenticator
 {
-    public interface IOtpAuthenticatorHelper
+    public interface IOtpAuthenticatorHelper//(One-Time Password - Tek Kullanımlık Şifre)
     {
         public Task<byte[]> GenerateSecretKey();
         public Task<string> ConvertSecretKeyToString(byte[] secretKey);
